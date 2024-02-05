@@ -1,0 +1,343 @@
+openapi: 3.0.0
+info:
+  title: ToDoApp
+  description: Simple ToDo list application where users can add, edit, and delete tasks. 
+  contact:
+    name: Ing. Ekaterina Lavrova
+    email: lavrova@seznam.cz
+  version: 1.0.0
+tags:
+  - name: Task
+    description: Task registered in system
+servers:
+  - url: http://localhost:8080
+paths:
+  /task:
+    post:
+      tags:
+        - Task
+      summary: Add a new Task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        201:
+          description: Task successfully added
+  /task/{name}:        
+    get:      
+      tags:
+        - Task
+      summary: Get Task based on name
+      parameters:
+        - in: path
+          name: name
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfull response with path param
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        400:
+          description: Invalid name        
+  /task/allTasks:
+    get:
+      tags:
+        - Task
+      summary: Get all task from the system
+      responses:
+        200:
+          description: Success Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+  /task/name/{id}:
+    patch:
+      tags:
+        - Task
+      summary: Update an existing Task name and description
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: name
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: description
+          required: true
+          schema:
+            type: string    
+      responses:
+        202:
+          description: Task name and description updated  
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        404:
+          description: Task not found  
+  /task/category/{id}:
+    patch:
+      tags:
+        - Task
+      summary: Update an existing Task category
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: category
+          required: true
+          schema:
+            type: string
+            enum: [ 'WORK','HOUSE','HEALTH','SOCIAL','SHOPPING','PERSONAL','OTHER' ]
+      responses:
+        202:
+          description: Task birthplace updated  
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        404:
+          description: Task not found  
+  /task/{id}:
+    get:
+      tags:
+        - Task
+      summary: Get Task based on id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Successfull response with path param
+          content:
+           application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        400:
+          description: Invalid id
+    delete:
+      tags:
+        - Task
+      summary: Delete a Task based on id
+      parameters:
+        - in: path
+          name: id
+          description: Task id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        204:
+          description: Task deleted successfully
+        404:
+          description: Task not found
+        403:
+          description: Unauthorized user
+        401:
+          description: User does not have access rights
+    put:
+      tags:
+        - Task
+      summary: Update an existing Task
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        content:
+          application/jason:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        202:
+          description: Task successfully added
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+  /task/{category}:
+    get:
+      tags:
+        - Task
+      summary: Get all tasks from any category
+      parameters:
+        - in: path
+          name: category
+          required: true
+          schema:
+            type: string
+            enum: [ 'WORK','HOUSE','HEALTH','SOCIAL','SHOPPING','PERSONAL','OTHER' ]
+      responses:
+        200:
+          description: Successful response with param
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        404:
+          description: Task not found
+  /task/{urgency}:
+    get:
+      tags:
+        - Task
+      summary: Get all tasks with any urgency
+      parameters:
+        - in: path
+          name: urgency
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Successful response with param
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        404:
+          description: Task not found
+  /task/{complexity}:
+    get:
+      tags:
+        - Task
+      summary: Get all tasks with any complexity
+      parameters:
+        - in: path
+          name: complexity
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Successful response with param
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        404:
+          description: Task not found
+  /task/{startDate}:        
+    get:
+      tags:
+        - Task
+      summary: Get all tasks with any start date
+      parameters:
+        - in: path
+          name: startDate
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Successful response with param
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        404:
+          description: Task not found
+  /task/{endDate}:   
+    get:
+      tags:
+        - Task
+      summary: Get all tasks with any end date
+      parameters:
+        - in: path
+          name: endDate
+          required: true
+          schema:
+            type: string
+            format: date-time
+      responses:
+        200:
+          description: Successful response with param
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tasks'
+        404:
+          description: Task not found
+          
+components:
+  schemas:
+    Task:
+      type: object
+      required: 
+        - id
+        - name
+        - description
+        - urgency
+        - complexity
+        - startDate
+        - period
+        - endDate
+        - category
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          format: int64
+          example: 34236599
+        name:
+          type: string
+          example: Clean up
+        description:
+          type: string
+          example: Collect trash in bucket, wash the windows, vacuum and mop.
+        urgency:
+          type: integer
+          format: int32
+          example: 1
+        complexity:
+          type: integer
+          format: int32
+          example: 1
+        startDate: 
+          type: string
+          format: date-time
+          example: 05.02.2024 11:50
+        endDate:
+          type: string
+          format: date-time
+          example: 07.02.2024 11:50
+        period:
+          type: string
+          format: duration
+          example: 2
+        category:
+          type: string
+          enum: [ 'WORK','HOUSE','HEALTH','SOCIAL','SHOPPING','PERSONAL','OTHER']
+          example: HOUSE
+        
+    Tasks:
+      type: array
+      items:
+        $ref: '#/components/schemas/Task'
